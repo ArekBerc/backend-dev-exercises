@@ -17,13 +17,29 @@ namespace login_register
 
 
             using var cmd = new SQLiteCommand(con);
-            cmd.CommandText = "INSERT INTO users(ids, password) VALUES(@ids, @password)";
+            cmd.CommandText = "INSERT INTO users(ids, password,authority) VALUES(@ids, @password,@authority)";
 
             cmd.Parameters.AddWithValue("@ids", id);
             cmd.Parameters.AddWithValue("@password", password);
+            cmd.Parameters.AddWithValue("@authority", "none");
+
             cmd.Prepare();
 
             cmd.ExecuteNonQuery();
+        }
+
+        public bool isAdmin(SQLiteConnection con)
+        {
+
+            using var cmd = new SQLiteCommand(con);
+
+            cmd.CommandText = @"SELECT * FROM users WHERE ids = @id and password = @password and authority = @authority" ;
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("@password", password);
+            cmd.Parameters.AddWithValue("@authority", "none");
+
+            var rdr = cmd.ExecuteReader();
+            return !rdr.HasRows;
         }
         public void openTicket(string message, SQLiteConnection con)
         {
@@ -41,7 +57,7 @@ namespace login_register
             cmd.CommandText = "INSERT INTO tickets(Ticket, adminanswered, askedUserId) VALUES(@ticket, @adminanswered, @askeduser)";
 
             cmd.Parameters.AddWithValue("@ticket", message);
-            cmd.Parameters.AddWithValue("@adminanswered", "none");
+            cmd.Parameters.AddWithValue("@adminanswered", "no answer");
             cmd.Parameters.AddWithValue("@askeduser", userid);
             cmd.Prepare();
             cmd.ExecuteNonQuery();
@@ -70,8 +86,27 @@ namespace login_register
             {
                 Console.WriteLine($"{rdr.GetString(1)} {rdr.GetString(2)} \n");
             }
-
-
         }
+
+ 
+
+            public void showAllTickets(SQLiteConnection con)
+            {
+
+
+
+            string stm = "SELECT * FROM tickets";
+
+            using var cmd = new SQLiteCommand(stm, con);
+
+            using SQLiteDataReader rdr = cmd.ExecuteReader();
+            Console.WriteLine($"{rdr.GetName(0)} {rdr.GetName(1)}  {rdr.GetName(2)} {rdr.GetName(3)}");
+
+            while (rdr.Read())
+            {
+                Console.WriteLine($@"{rdr.GetInt32(0)} {rdr.GetString(1)} {rdr.GetString(2)} {rdr.GetString(3)}");
+            }
+        }
+        
     }
 }

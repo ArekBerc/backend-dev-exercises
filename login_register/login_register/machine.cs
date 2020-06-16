@@ -42,7 +42,7 @@ namespace login_register
 
             while (key != "q")
             {
-                Console.WriteLine("what do you want to do ? :  \n 1- login \n 2- register \n q- exit \n");
+                Console.WriteLine("what do you want to do ? :  \n 1- login \n 2- register \n q- quit \n");
                 key = Console.ReadLine();
                 if (key == "2")
                 {
@@ -50,6 +50,7 @@ namespace login_register
                     string id = Console.ReadLine();
                     Console.WriteLine("Enter your password:");
                     string password = Console.ReadLine();
+                    Console.Clear();
                     User new_user = new User();
                     new_user.id = id;
                     new_user.password = password;
@@ -62,6 +63,8 @@ namespace login_register
                     string id = Console.ReadLine();
                     Console.WriteLine("Enter your password:");
                     string password = Console.ReadLine();
+                    Console.Clear();
+
                     int login = checkUser(id, password, con);
                     if (login == 0)
                     {
@@ -71,21 +74,50 @@ namespace login_register
                         var user = new User();
                         user.id = id;
                         user.password = password;
-                        
+                        string key2 = null;
                         Console.WriteLine("log in succes\n");
-                        Console.WriteLine("What do you want to do ?\n 1 - open a ticket\n 2 - dispay your tickets");
-                        string key2= Console.ReadLine();
-                        if(key2 == "1")
+                        while (key2 != "3")
                         {
-                            Console.WriteLine("Write your message : \n");
-                            string message = Console.ReadLine();
-                            user.openTicket(message,con);
-                        }
-                        else if (key2 == "2")
-                        {
-                            user.showMyTickets(con);
-                        }
+                            if (!user.isAdmin(con))
+                            {
+                                
+                                Console.WriteLine("What do you want to do ?\n 1 - open a ticket\n 2 - dispay your tickets\n 3 - Exit");
+                                key2 = Console.ReadLine();
+                                Console.Clear();
 
+                                if (key2 == "1")
+                                {
+                                    Console.WriteLine("Write your message : \n");
+                                    string message = Console.ReadLine();
+                                    Console.Clear();
+
+                                    user.openTicket(message, con);
+                                }
+                                else if (key2 == "2")
+                                {
+                                    user.showMyTickets(con);
+
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("What do you want to do ?\n 1 - see all tickets\n 2 - close a ticket\n 3 - Exit");
+                                key2 = Console.ReadLine();
+                                Console.Clear();
+                                if (key2 == "1")
+                                {
+                                    user.showAllTickets(con);
+                                }
+                                else if (key2 == "2")
+                                {
+                                    Console.WriteLine("under construction please press any key to exit\n");
+                                    Console.ReadLine();
+                                    Console.Clear();
+
+
+                                }
+                            }
+                        }
                     }
 
                 }
