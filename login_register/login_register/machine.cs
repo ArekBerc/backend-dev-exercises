@@ -110,9 +110,9 @@ namespace login_register
                                 }
                                 else if (key2 == "2")
                                 {
-                                    Console.WriteLine("under construction please press any key to exit\n");
-                                    Console.ReadLine();
+                                    user.CloseATicket(con);
                                     Console.Clear();
+
 
 
                                 }

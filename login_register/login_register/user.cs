@@ -88,7 +88,20 @@ namespace login_register
             }
         }
 
- 
+            public void CloseATicket(SQLiteConnection con)
+        {
+            showAllTickets(con);
+            using var cmd = new SQLiteCommand(con);
+            Console.WriteLine("Which ticket are yoou going to close, write the id of it: ");
+            var key = Console.ReadLine();
+
+            cmd.CommandText = "UPDATE tickets SET adminanswered = @admin WHERE ticketid = @ticketid";
+
+            cmd.Parameters.AddWithValue("@admin", id + " is answered");
+            cmd.Parameters.AddWithValue("@ticketid", key);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+        }
 
             public void showAllTickets(SQLiteConnection con)
             {
@@ -101,7 +114,7 @@ namespace login_register
 
             using SQLiteDataReader rdr = cmd.ExecuteReader();
             Console.WriteLine($"{rdr.GetName(0)} {rdr.GetName(1)}  {rdr.GetName(2)} {rdr.GetName(3)}");
-
+            rdr.Read();
             while (rdr.Read())
             {
                 Console.WriteLine($@"{rdr.GetInt32(0)} {rdr.GetString(1)} {rdr.GetString(2)} {rdr.GetString(3)}");
